@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,6 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $category = Category::factory()->create();
+        Category::factory(7)->create();
+        Category::factory(4)->create([
+            'parent_id' => $category->id
+        ]);
+        Product::factory(30)
+            ->create()
+            ->each(function ($product) {
+                $randomFields = Category::all()->random(rand(0, 4))->pluck('id');
+                $product->categories()->attach($randomFields);
+            });
     }
 }
