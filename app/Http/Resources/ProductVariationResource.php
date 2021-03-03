@@ -3,8 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\ProductVariationOptionsResource;
 
-class ProductsIndexResource extends JsonResource
+class ProductVariationResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,12 +18,7 @@ class ProductsIndexResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'slug' => $this->slug,
-            'price' => $this->formattedPrice,
-            'slider_order' => $this->slider_order,
-            'homepage_order' => $this->homepage_order,
-            'image' => $this->image,
-            'description' => $this->description,
+            'options' => ProductVariationOptionsResource::collection($this->options)
         ];
     }
 }
