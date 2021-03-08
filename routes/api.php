@@ -8,6 +8,7 @@ use App\Http\Controllers\Categories\CategoryController;
 
 
 Route::resource('/categories', CategoryController::class);
+Route::get('/products/{product}/attributes/{attribute}', [ProductController::class, 'getOptionsWithRelatedProduct']);
 Route::resource('/products', ProductController::class);
 
 Route::get('/', function (Request $request) {

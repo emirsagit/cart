@@ -16,6 +16,11 @@ class Money
         $this->money = BaseMoney::TRY($money);
     }
 
+    public function amount()
+    {
+        return $this->money->getAmount();
+    } 
+
     public function formatted()
     {
         $formatter = new IntlMoneyFormatter(new NumberFormatter('tr_TR', NumberFormatter::CURRENCY), new ISOCurrencies());

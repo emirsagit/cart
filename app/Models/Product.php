@@ -37,6 +37,18 @@ class Product extends Model
         return (new Scoper(request()))->apply($builder, $scopes);
     }
 
+    public function stockCount()
+    {
+        return $this->variants->sum(function ($variant) {
+            return $variant->stockCount();
+        });
+    } 
+
+    public function inStock()
+    {
+        return $this->stockCount() > 0;
+    } 
+
     public function categories()
     {
         return $this->belongsToMany(Category::class);

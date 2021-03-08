@@ -22,7 +22,6 @@ class CreateProductVariantsTable extends Migration
             $table->foreignId('attribute_id')->nullable()->constrained('attributes')->onDelete('SET NULL');
             $table->foreignId('attribute_value_id')->nullable()->constrained('attribute_values')->onDelete('SET NULL');
             $table->integer('price');
-            $table->integer('stock')->nullable();
             $table->timestamps();
         });
     }

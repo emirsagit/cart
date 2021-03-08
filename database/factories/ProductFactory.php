@@ -27,7 +27,7 @@ class ProductFactory extends Factory
             'name' => $name,
             'slug' => Str::slug($name),
             'image' => 'https://picsum.photos/1000/1000',
-            'price' => $this->faker->numberBetween(1000, 300000),
+            'price' => $this->faker->numberBetween(1000, 100000),
             'description' => $this->faker->paragraph,
             'show_on_slider' => $this->faker->boolean(30),
             'show_on_homepage' => $this->faker->boolean(42),

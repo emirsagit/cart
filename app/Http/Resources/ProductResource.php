@@ -3,22 +3,21 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\ProductsIndexResource;
-use App\Http\Resources\ProductVariationResource;
-use App\Http\Resources\ProductVariationOptionsResource;
+use App\Http\Resources\ProductVariantResource;
 
 
-class ProductResource extends ProductsIndexResource 
+class ProductResource extends ProductsIndexResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
     public function toArray($request)
     {
+        $variants = $this->variants;
         return array_merge(parent::toArray($request), [
-            'variations' => ProductVariationOptionsResource::collection($this->variationOptions)
-        ]) ;
+            'attributes' => ProductVariantResource::collection(
+                $variants->groupBy(['attribute.name', 'attributeValue.name'])
+            ),
+            'options' => ProductVariantResource::collection(
+                $variants->groupBy(['option.name', 'optionValue.name'])
+            ),
+        ]);
     }
 }
