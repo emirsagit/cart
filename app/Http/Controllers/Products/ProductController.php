@@ -18,13 +18,14 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::withScopes($this->scopes())->paginate(10);
+        $products = Product::with('variants.option', 'variants.attribute', 'variants.stock', 'variants.attributeValue', 'variants.optionValue', 'variants.product')->withScopes($this->scopes())->paginate(10);
 
         return ProductsIndexResource::collection($products);
     }
 
     public function show(Product $product)
     {
+        $product->load(['variants.option', 'variants.attribute', 'variants.stock', 'variants.attributeValue', 'variants.optionValue', 'variants.product']);
         return new ProductResource($product);
     }
 
@@ -35,7 +36,7 @@ class ProductController extends Controller
         ])
             ->whereHas('attributeValue', function (Builder $query) use ($request) {
                 $query->where('name', '=', $request->attribute);
-            })->get();
+            })->with(['attribute', 'attributeValue', 'stock', 'option', 'optionValue', 'product'])->get();
 
         return ProductVariantResource::collection($products->groupBy(['option.name', 'optionValue.name']));
     }
