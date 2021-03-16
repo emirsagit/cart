@@ -34,9 +34,19 @@ class CartController extends Controller
         $this->cart->delete($productVariant->id);
     } 
     
-    public function index(Request $request)
+    public function index(Request $request, Cart $cart)
     {
         $user = $request->user()->load(['cart.product', 'cart.attributeValue', 'cart.attribute', 'cart.option', 'cart.optionValue', 'cart.stock', 'cart.product.variants.stock', 'cart.product']);
-        return new CartProductResource($request->user());
+
+        return (new CartProductResource($request->user()))->additional([
+            'meta' => $this->meta($cart) 
+        ]);
+    } 
+
+    protected function meta(Cart $cart)
+    {
+        return [
+            'empty' => $cart->isEmpty()
+        ];
     } 
 }

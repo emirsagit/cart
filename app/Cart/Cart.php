@@ -33,6 +33,11 @@ class Cart
     {
         auth()->user()->cart()->detach();
     } 
+
+    public function isEmpty()
+    {
+        return auth()->user()->cart->sum('pivot.quantity') === 0;
+    } 
     
     protected function getCurrentQuantity($product, $user)
     {
