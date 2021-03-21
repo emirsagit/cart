@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Address;
 use App\Models\ProductVariant;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -48,5 +49,8 @@ class User extends Authenticatable
                 ->withPivot('quantity', 'created_at');
     } 
 
-    
+    public function addresses()
+    {
+        return $this->hasMany(Address::class, 'user_id', 'id');
+    } 
 }

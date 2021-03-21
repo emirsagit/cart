@@ -52,6 +52,11 @@ class ProductVariant extends Model
         return $this->stockCount() > 0;
     }
 
+    public function minStock($requestQuantity)
+    {
+        return min($requestQuantity, $this->stockCount());
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');

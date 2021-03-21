@@ -21,7 +21,8 @@ return [
         '/login',
         '/register',
         '/logout',
-        '/sanctum/token'
+        '/sanctum/token',
+        '/api/cart'
     ],
 
     'allowed_methods' => ['*'],

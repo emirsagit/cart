@@ -22,6 +22,8 @@ class CartController extends Controller
     public function store(CartRequest $request)
     {
         $this->cart->add($request);
+
+        $this->cart->sync();
     }
 
     public function update(ProductVariant $productVariant, UpdateCartQuantity $request)
@@ -32,21 +34,26 @@ class CartController extends Controller
     public function destroy(ProductVariant $productVariant)
     {
         $this->cart->delete($productVariant->id);
-    } 
-    
-    public function index(Request $request, Cart $cart)
+    }
+
+    public function index(Request $request)
     {
+        $this->cart->sync();
+
         $user = $request->user()->load(['cart.product', 'cart.attributeValue', 'cart.attribute', 'cart.option', 'cart.optionValue', 'cart.stock', 'cart.product.variants.stock', 'cart.product']);
 
-        return (new CartProductResource($request->user()))->additional([
-            'meta' => $this->meta($cart) 
+        return (new CartProductResource($user))->additional([
+            'meta' => $this->meta($this->cart)
         ]);
-    } 
+    }
 
-    protected function meta(Cart $cart)
+    protected function meta()
     {
         return [
-            'empty' => $cart->isEmpty()
+            'empty' => $this->cart->isEmpty(),
+            'subtotal' => $this->cart->subtotal()->formatted(),
+            'total' => $this->cart->total()->formatted(),
+            'stockHasChanged' => $this->cart->stockHasChanged()
         ];
-    } 
+    }
 }

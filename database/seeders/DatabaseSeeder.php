@@ -2,16 +2,23 @@
 
 namespace Database\Seeders;
 
+use App\Models\City;
+use App\Models\User;
 use App\Models\Stock;
 use App\Models\Option;
 use App\Models\Product;
-
 use App\Models\Category;
+use App\Models\District;
 use App\Models\Attribute;
 use App\Models\OptionValue;
 use App\Models\AttributeValue;
+use App\Models\Neighborhood;
 use App\Models\ProductVariant;
 use Illuminate\Database\Seeder;
+use Database\Seeders\AddressCitiesTableSeeder;
+use Database\Seeders\AddressDistrictsTableSeeder;
+use Database\Seeders\AddressNeighborhoodsTableSeeder;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -82,6 +89,21 @@ class DatabaseSeeder extends Seeder
                     ]);
                 }
             }
+        }
+
+        $this->call(AddressCitiesTableSeeder::class);
+        $this->call(AddressDistrictsTableSeeder::class);
+        $this->call(AddressNeighborhoodsTableSeeder::class);
+
+        for ($i = 0; $i < 100; $i++) {
+            User::factory()
+                ->hasAddresses(3, [
+                    'city_id' => ($city = City::get()->random())->id,
+                    'district' => ($district = District::where('city_id', $city->id)->first())->name,
+                    'neighborhood' => ($neighborhood = Neighborhood::where('district_id', $district->id)->first())->name,
+                    'postal_code' => $neighborhood->postal_code,
+                ])
+                ->create();
         }
     }
 }
