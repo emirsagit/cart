@@ -15,6 +15,12 @@ class Address extends Model
         'name', 'description', 'user_id', 'phone', 'address', 'city_id', 'neighborhood', 'district', 'postal_code', 'is_delivery', 'is_billing', 'is_default'
     ];
 
+    protected $casts = [
+        'is_default' => 'boolean',
+        'is_delivery' => 'boolean',
+        'is_billing' => 'boolean'
+    ];
+
     public static function boot()
     {
         parent::boot();

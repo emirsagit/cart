@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Option;
 use App\Scoping\Scoper;
 use App\Models\Category;
+use App\Models\Shipping;
 use App\Models\Attribute;
 use App\Models\ProductVariant;
 use App\Models\Traits\IsOrderable;
@@ -67,5 +68,10 @@ class Product extends Model
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
+    } 
+
+    public function shippings()
+    {
+        return $this->belongsToMany(Shipping::class, 'product_shipping');
     } 
 }

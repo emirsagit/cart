@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\District;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AddressStoreRequest extends FormRequest
@@ -29,9 +30,16 @@ class AddressStoreRequest extends FormRequest
             'phone' => 'required|numeric',
             'address' => 'required|string',
             'city_id' => 'required|exists:cities,id',
-            'district' => 'required|exists:districts,name',
+            'district' => 'required',
             'neighborhood' => 'required',
             'postal_code' => 'required|numeric'
         ];
     }
+
+    protected function prepareForValidation()
+    {
+        if ($this->has('district_id'))
+            $this->merge(['district' => (District::where('id', $this->district_id)->first())->name]);
+    }
 }
+    
