@@ -29,9 +29,7 @@ class AddressFactory extends Factory
             'neighborhood' => $this->faker->streetName,
             'district' => $this->faker->city,
             'postal_code' => $this->faker->postcode,
-            'is_default' => $this->faker->boolean(50),
-            'is_delivery' => $this->faker->boolean(50),
-            'is_billing' => $this->faker->boolean(50),
+            'is_default' => $this->faker->boolean(50)
         ];
     }
 }

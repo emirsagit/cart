@@ -25,8 +25,6 @@ class CreateAddressesTable extends Migration
             $table->string('neighborhood', 50);
             $table->unsignedSmallInteger('postal_code');
             $table->boolean('is_default')->default(false);
-            $table->boolean('is_delivery')->default(false);
-            $table->boolean('is_billing')->default(false);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

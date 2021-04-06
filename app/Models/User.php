@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Order;
 use App\Models\Address;
 use App\Models\ProductVariant;
 use Laravel\Sanctum\HasApiTokens;
@@ -52,5 +53,10 @@ class User extends Authenticatable
     public function addresses()
     {
         return $this->hasMany(Address::class, 'user_id', 'id');
+    } 
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     } 
 }

@@ -16,6 +16,12 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->index()->constrained('users');
+            $table->foreignId('delivery_id')->index()->constrained('addresses');
+            $table->foreignId('billing_id')->index()->constrained('addresses');
+            $table->foreignId('shipping_id')->index()->constrained('shippings');
+            $table->boolean('pay_at_door')->default(false);
+            $table->integer('subtotal');
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

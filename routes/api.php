@@ -14,11 +14,12 @@ use App\Http\Controllers\Excel\ExcelImportController;
 use App\Http\Controllers\Districts\DistrictController;
 use App\Http\Controllers\Shippping\ShippingController;
 use App\Http\Controllers\Categories\CategoryController;
-
+use App\Http\Controllers\Order\OrderController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::resource('/addresses', AddressController::class);
     Route::get('/user', [MeController::class, 'get']);
+    Route::post('/order', [OrderController::class, 'store']);
     Route::resource('/cart', CartController::class, [
         'parameters' => [
             'cart' => 'productVariant'

@@ -3,10 +3,13 @@
 namespace App\Cart;
 
 use App\Cart\Money;
+use App\Models\Shipping;
 
 class Cart
 {
     protected $stockHasChanged = false;
+
+    protected $shipping;
 
     public function add($request)
     {
@@ -52,8 +55,20 @@ class Cart
         );
     }
 
+    public function withShipping($request)
+    {
+        if ($shippingId = $request->shipping_id) {
+            $this->shipping = Shipping::find($shippingId);
+        }
+
+        return $this;
+    }
+
     public function total()
     {
+        if($this->shipping) {
+            return $this->subtotal()->add($this->shipping->price);
+        }
         return $this->subtotal();
     }
 
@@ -76,6 +91,11 @@ class Cart
     {
         return $this->stockHasChanged;
     }
+
+    public function products($request)
+    {
+        return $request->user()->cart;
+    } 
 
     protected function getCurrentQuantity($product, $user)
     {
