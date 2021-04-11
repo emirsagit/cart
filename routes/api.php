@@ -19,7 +19,7 @@ use App\Http\Controllers\Order\OrderController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::resource('/addresses', AddressController::class);
     Route::get('/user', [MeController::class, 'get']);
-    Route::post('/order', [OrderController::class, 'store']);
+    Route::middleware(['cart.sync', 'cart.isempty'])->post('/order', [OrderController::class, 'store']);
     Route::resource('/cart', CartController::class, [
         'parameters' => [
             'cart' => 'productVariant'

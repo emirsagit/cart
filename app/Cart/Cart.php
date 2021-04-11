@@ -43,7 +43,7 @@ class Cart
 
     public function isEmpty()
     {
-        return auth()->user()->cart->sum('pivot.quantity') === 0;
+        return auth()->user()->cart->sum('pivot.quantity') <= 0;
     }
 
     public function subtotal()

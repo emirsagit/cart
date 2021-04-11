@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Cart\Money;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\Shipping;
 use App\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Traits\HasFormattedPrice;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model
@@ -31,12 +33,12 @@ class Order extends Model
         });
     }
 
-    public function delivery_address()
+    public function deliveryAddress()
     {
         return $this->belongsTo(Address::class, 'delivery_id');
     }
 
-    public function billing_address()
+    public function billingAddress()
     {
         return $this->belongsTo(Address::class, 'billing_id');
     }
@@ -50,6 +52,11 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getSubtotalAttribute($value)
+    {
+        return new Money($value);
+    } 
 
     public function products()
     {

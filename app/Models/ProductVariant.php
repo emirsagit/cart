@@ -11,6 +11,7 @@ use App\Models\OptionValue;
 use App\Models\AttributeValue;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\HasFormattedPrice;
+use App\Models\Collections\ProductVariantCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProductVariant extends Model
@@ -91,5 +92,10 @@ class ProductVariant extends Model
     {
         return $this->belongsToMany(ProductVariant::class, 'product_variant_stock_view')
             ->withPivot(['stock', 'in_stock']);
+    }
+
+    public function newCollection(array $models = [])
+    {
+        return new ProductVariantCollection($models);
     }
 }
