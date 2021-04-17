@@ -27,6 +27,6 @@ class EmptyCart
      */
     public function handle(OrderCreated $event)
     {
-        $this->cart->empty();
+        $this->cart->empty($event->user);
     }
 }

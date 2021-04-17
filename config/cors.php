@@ -16,13 +16,16 @@ return [
     */
 
     'paths' => [
-        'api/*',    
+        'api/*',
         '/sanctum/csrf-cookie',
         '/login',
         '/register',
         '/logout',
         '/sanctum/token',
-        '/api/cart'
+        '/api/cart',
+        '/api/payment',
+        '/orders',
+        '/api/orders'
     ],
 
     'allowed_methods' => ['*'],

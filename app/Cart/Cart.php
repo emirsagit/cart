@@ -36,8 +36,11 @@ class Cart
         auth()->user()->cart()->detach($productId);
     }
 
-    public function empty()
+    public function empty($user = null)
     {
+        if ($user) {
+            return $user->cart()->detach();
+        }
         auth()->user()->cart()->detach();
     }
 
@@ -66,7 +69,7 @@ class Cart
 
     public function total()
     {
-        if($this->shipping) {
+        if ($this->shipping) {
             return $this->subtotal()->add($this->shipping->price);
         }
         return $this->subtotal();
@@ -92,10 +95,11 @@ class Cart
         return $this->stockHasChanged;
     }
 
-    public function products($request)
+    public function products($user)
     {
-        return $request->user()->cart;
-    } 
+        return $user->cart;
+    }
+
 
     protected function getCurrentQuantity($product, $user)
     {

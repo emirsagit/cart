@@ -6,6 +6,7 @@ use NumberFormatter;
 use Money\Money as BaseMoney;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\IntlMoneyFormatter;
+use Money\Formatter\DecimalMoneyFormatter;
 
 class Money
 {
@@ -24,6 +25,13 @@ class Money
     public function formatted()
     {
         $formatter = new IntlMoneyFormatter(new NumberFormatter('tr_TR', NumberFormatter::CURRENCY), new ISOCurrencies());
+        return $formatter->format($this->money);
+    }
+
+    public function decimalFormatted()
+    {
+        $currencies = new ISOCurrencies();
+        $formatter = new DecimalMoneyFormatter($currencies);
         return $formatter->format($this->money);
     }
 

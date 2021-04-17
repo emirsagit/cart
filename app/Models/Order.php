@@ -33,6 +33,16 @@ class Order extends Model
         });
     }
 
+    public function getSubtotalAttribute($value)
+    {
+        return new Money($value);
+    }
+
+    public function total()
+    {
+        return $this->subtotal->add($this->shipping->price);
+    }
+
     public function deliveryAddress()
     {
         return $this->belongsTo(Address::class, 'delivery_id');
@@ -53,15 +63,16 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getSubtotalAttribute($value)
-    {
-        return new Money($value);
-    } 
-
     public function products()
     {
         return $this->belongsToMany(ProductVariant::class, 'product_variant_order', 'order_id', 'product_variant_id')
             ->withPivot('quantity')
             ->withTimestamps();
+    }
+
+    public function updateStatusPaymentFailed()
+    {
+        $this->status = self::PAYMENT_FAILED;
+        $this->save();
     }
 }
