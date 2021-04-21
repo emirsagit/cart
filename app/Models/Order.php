@@ -6,6 +6,7 @@ use App\Cart\Money;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\Shipping;
+use App\Models\Transaction;
 use App\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\HasFormattedPrice;
@@ -21,7 +22,7 @@ class Order extends Model
     const COMPLETED = "completed";
 
     protected $fillable = [
-        'status', 'subtotal', 'delivery_id', 'billing_id', 'user_id', 'shipping_id', 'pay_at_door'
+        'status', 'subtotal', 'delivery_id', 'billing_id', 'user_id', 'shipping_id', 'pay_at_door', 'total'
     ];
 
     public static function boot()
@@ -33,14 +34,20 @@ class Order extends Model
         });
     }
 
+    public function updateStatusPaymentFailed()
+    {
+        $this->status = self::PAYMENT_FAILED;
+        $this->save();
+    }
+
     public function getSubtotalAttribute($value)
     {
         return new Money($value);
     }
 
-    public function total()
+    public function getTotalAttribute($value)
     {
-        return $this->subtotal->add($this->shipping->price);
+        return new Money($value);
     }
 
     public function deliveryAddress()
@@ -70,9 +77,8 @@ class Order extends Model
             ->withTimestamps();
     }
 
-    public function updateStatusPaymentFailed()
+    public function transactions()
     {
-        $this->status = self::PAYMENT_FAILED;
-        $this->save();
+        return $this->hasMany(Transaction::class);
     }
 }

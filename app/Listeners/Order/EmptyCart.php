@@ -3,7 +3,7 @@
 namespace App\Listeners\Order;
 
 use App\Cart\Cart;
-use App\Events\Order\OrderCreated;
+use App\Events\Order\OrderPaid;
 
 
 class EmptyCart
@@ -25,7 +25,7 @@ class EmptyCart
      * @param  OrderCreated  $event
      * @return void
      */
-    public function handle(OrderCreated $event)
+    public function handle(OrderPaid $event)
     {
         $this->cart->empty($event->user);
     }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Order;
 use App\Models\Address;
+use App\Models\Installment;
 use App\Models\ProductVariant;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -58,5 +59,10 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
+    } 
+
+    public function installments()
+    {
+        return $this->hasMany(Installment::class);
     } 
 }

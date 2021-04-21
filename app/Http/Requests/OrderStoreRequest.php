@@ -49,11 +49,11 @@ class OrderStoreRequest extends FormRequest
             'pay_at_door' => [
                 new PayAtDoorIsValid($this->shipping_id),
             ],
-            // 'card_number' => ['required', new CardNumber],
-            // 'expiration_year' => ['required', new CardExpirationYear($this->get('expiration_month'))],
-            // 'expiration_month' => ['required', new CardExpirationMonth($this->get('expiration_year'))],
-            // 'cvc' => ['required', new CardCvc($this->get('card_number'))],
-            // 'card_holder' => ['required', 'string'],
+            'card_number' => ['required', new CardNumber],
+            'expiration_year' => ['required', new CardExpirationYear($this->get('expiration_month'))],
+            'expiration_month' => ['required', new CardExpirationMonth($this->get('expiration_year'))],
+            'cvc' => ['required', new CardCvc($this->get('card_number'))],
+            'card_holder' => ['required', 'string'],
         ];
     }
 }

@@ -13,4 +13,5 @@ interface Gateway
     public function finishSecureCharge();
     public function withOptions(Request $request, Cart $cart, Order $order);
     public function withSecureOptions(Request $request);
+    public function getInstallmentOptions($binNumber, $price);
 }

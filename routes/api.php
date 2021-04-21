@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\MeController;
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Cities\CityController;
+use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\Order\OrderController;
 use Iyzipay\Request\CreateThreedsPaymentRequest;
 use App\Http\Controllers\Products\ProductController;
@@ -31,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ]
     ]);
     Route::get('/user', [MeController::class, 'get']);
+    Route::post('/payment/installment',  [InstallmentController::class, 'store']);
 });
 
 //address city, district, neighborhood
@@ -40,7 +42,7 @@ Route::get('/cities/{city}/districts', [DistrictController::class, 'district']);
 Route::get('/districts/{district}/neighborhoods', [DistrictController::class, 'neighborhood']);
 // end address
 
-Route::post('/payment',  [OrderController::class, 'payment']);
+Route::post('/payment',  [OrderController::class, 'finishThreedPaymentCharge']);
 
 Route::resource('/categories', CategoryController::class);
 

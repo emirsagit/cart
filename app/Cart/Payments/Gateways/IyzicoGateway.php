@@ -15,10 +15,12 @@ use App\Cart\Payments\Gateway;
 use Iyzipay\Model\PaymentCard;
 use Iyzipay\Model\BasketItemType;
 use Iyzipay\Model\ThreedsPayment;
+use Iyzipay\Model\InstallmentInfo;
 use Iyzipay\Model\ThreedsInitialize;
 use Iyzipay\Request\CreatePaymentRequest;
 use App\Exceptions\PaymentFailedException;
 use Iyzipay\Request\CreateThreedsPaymentRequest;
+use Iyzipay\Request\RetrieveInstallmentInfoRequest;
 
 class IyzicoGateway implements Gateway
 {
@@ -43,19 +45,19 @@ class IyzicoGateway implements Gateway
     public function charge()
     {
         $this->result = Payment::create($this->purchaseRequest, $this->options);
-        return $this;
+        return $this->result;
     }
 
     public function initializeSecureCharge()
     {
         $this->result = ThreedsInitialize::create($this->purchaseRequest, $this->options);
-        return $this;
+        return $this->result;
     }
 
     public function finishSecureCharge()
     {
         $this->result = ThreedsPayment::create($this->purchaseRequest, $this->options);
-        return $this;
+        return $this->result;
     }
 
     public function withOptions(Request $request, Cart $cart, Order $order)
@@ -75,6 +77,16 @@ class IyzicoGateway implements Gateway
         return $this;
     }
 
+    public function getInstallmentOptions($binNumber, $price)
+    {
+        $request = new RetrieveInstallmentInfoRequest();
+        $request->setLocale(\Iyzipay\Model\Locale::TR);
+        $request->setBinNumber($binNumber);
+        $request->setPrice($price);
+
+        return InstallmentInfo::retrieve($request, $this->options);
+    }
+
     public function withSecureOptions($request)
     {
         $this->purchaseRequest = new CreateThreedsPaymentRequest();
@@ -83,22 +95,6 @@ class IyzicoGateway implements Gateway
         $this->purchaseRequest->setPaymentId($request->paymentId);
         $this->purchaseRequest->setConversationData($request->conversationData);
         return $this;
-    }
-
-    public function checkStatus()
-    {
-        if ($this->result->getStatus() == 'failure') {
-            return false;
-        }
-        return true;
-    }
-
-    public function checkSecurePaymentStatus()
-    {
-        if ($this->result->getStatus() == 'failure') {
-            return false;
-        }
-        return true;
     }
 
     public function getHtmlContent()

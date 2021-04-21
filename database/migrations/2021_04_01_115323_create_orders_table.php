@@ -20,7 +20,8 @@ class CreateOrdersTable extends Migration
             $table->foreignId('billing_id')->index()->constrained('addresses');
             $table->foreignId('shipping_id')->index()->constrained('shippings');
             $table->boolean('pay_at_door')->default(false);
-            $table->integer('subtotal');
+            $table->unsignedSmallInteger('subtotal');
+            $table->unsignedSmallInteger('total');
             $table->string('status')->default('pending');
             $table->timestamps();
         });

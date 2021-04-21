@@ -52,7 +52,7 @@ class CartController extends Controller
         return [
             'empty' => $this->cart->isEmpty(),
             'subtotal' => $this->cart->subtotal()->formatted(),
-            'total' => $this->cart->withShipping($request)->total()->formatted(),
+            'total' => $this->cart->withShipping($request)->withInstallment($request)->total()->formatted(),
             'stockHasChanged' => $this->cart->stockHasChanged()
         ];
     }

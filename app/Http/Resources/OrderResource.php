@@ -22,7 +22,7 @@ class OrderResource extends JsonResource
             'created_at' => $this->created_at->diffForHumans(),
             'status' => $this->status,
             'subtotal' => $this->subtotal->formatted(),
-            'total' => $this->total()->formatted(),
+            'total' => $this->total->formatted(),
             'products' => ProductVariantResource::collection($this->whenLoaded('products')),
             'delivery_address' => new AddressResource($this->whenLoaded('deliveryAddress')),
             'billing_address' => new AddressResource($this->whenLoaded('billingAddress')),

@@ -25,7 +25,8 @@ return [
         '/api/cart',
         '/api/payment',
         '/orders',
-        '/api/orders'
+        '/api/orders',
+        '/api/payment/installment',
     ],
 
     'allowed_methods' => ['*'],

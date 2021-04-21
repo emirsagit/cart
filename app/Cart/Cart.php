@@ -4,12 +4,15 @@ namespace App\Cart;
 
 use App\Cart\Money;
 use App\Models\Shipping;
+use App\Models\Installment;
 
 class Cart
 {
     protected $stockHasChanged = false;
 
     protected $shipping;
+
+    protected $installment;
 
     public function add($request)
     {
@@ -67,12 +70,25 @@ class Cart
         return $this;
     }
 
+    public function withInstallment($request)
+    {
+        if ($installmentId = $request->installment_id) {
+            $this->installment = Installment::find($installmentId);
+        }
+
+        return $this;
+    }
+
     public function total()
     {
+        $total = $this->subtotal();
         if ($this->shipping) {
-            return $this->subtotal()->add($this->shipping->price);
+            $total = $total->add($this->shipping->price);
         }
-        return $this->subtotal();
+        if($this->installment) {
+            $total = $total->add($this->installment->installment_difference);
+        }
+        return $total;
     }
 
     public function sync()
