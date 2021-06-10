@@ -1,0 +1,5 @@
+1. sipariş sonrası taksitlendirme toplam tutarı ile toplam tutar kıyaslanacak. (ya da subtotal düşün)
+2. auth modülü kontrol edilecek aynı domain altına alınacak sanctumla. ya da farklı bir token kullanılacak
+3. üyeliksiz emaille alışveriş için düzenleme yapılacak
+4. kampanyalar oluşturulacak
+5. pazaryeri entegrasyonları yapılacak

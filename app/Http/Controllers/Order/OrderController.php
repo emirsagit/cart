@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Order;
 
+use Throwable;
 use App\Cart\Cart;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Cart\Payments\Gateway;
 use App\Events\Order\OrderPaid;
+use App\Exceptions\Payment3dsecureFailed;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Http\Requests\OrderStoreRequest;
@@ -42,18 +44,24 @@ class OrderController extends Controller
         $order = $this->createOrder($request);
 
         if ($request->has3ds) {
-            $this->paymentResult = $this->initialThreedPaymentCharge($request, $order);
-            $this->checkPayment($this->paymentResult, $order);
-            return $this->paymentResult->getHtmlContent();
+            $this->gateway = $this->initialThreedPaymentCharge($request, $order);
+
+            if (!$this->gateway->checkPayment()) {
+                $this->paymentFailed($order);
+            }
+
+            return $this->gateway->get3dsHtmlContent();
         }
 
-        $this->paymentResult = $this->gateway
+        $this->gateway = $this->gateway
             ->withOptions($request, $this->cart, $order)
             ->charge();
 
-        $this->checkPayment($this->paymentResult, $order);
+        if (!$this->gateway->checkPayment()) {
+            $this->paymentFailed($order);
+        }
 
-        $this->afterPayment($this->paymentResult, $order);
+        $this->afterPayment($order);
 
         return new OrderResource($order);
     }
@@ -61,65 +69,55 @@ class OrderController extends Controller
     public function finishThreedPaymentCharge(Request $request)
     {
         $order = Order::find($request->conversationId);
-        $this->checkSecurePaymentValidation($order, $request);
-        $this->paymentResult = $this->gateway->withSecureOptions($request)->finishSecureCharge();
-        $this->checkSecurePayment($this->paymentResult, $order);
-        $this->afterPayment($this->paymentResult, $order);
+
+        if (!$this->gateway->checkSecurePaymentValidation($request)) {
+            $this->payment3dsFailed($order, $request);
+        }
+
+        $this->gateway = $this->gateway->withSecureOptions($request, $order)->finishSecureCharge();
+
+        if (!$this->gateway->checkPayment()) {
+            $this->payment3dsFailed($order);
+        }
+
+        $this->afterPayment($order);
+
         return redirect("http://localhost:3000/odeme-sonrasi/order/{$order->id}");
     }
 
-    public function initialThreedPaymentCharge($request, $order)
+    protected function initialThreedPaymentCharge($request, $order)
     {
         return $this->gateway
             ->withOptions($request, $this->cart, $order)
             ->initializeSecureCharge();
     }
 
+    protected function paymentFailed($order)
+    {
+        $order->updateStatusPaymentFailed();
 
-    protected function afterPayment($paymentResult, Order $order)
+        $errorMessage = $this->gateway->logPaymentFailed($order);
+
+        throw new PaymentFailedException($errorMessage);
+    }
+
+    protected function payment3dsFailed($order, $request = null)
+    {
+        $order->updateStatusPaymentFailed();
+
+        $errorMessage = $this->gateway->logPaymentFailed($order, $request);
+
+        throw new Payment3dsecureFailed($errorMessage);
+    }
+
+
+    protected function afterPayment(Order $order)
     {
         $user = $order->user;
 
         $order->products()->sync($this->cart->products($user)->forSyncing());
         //forSyncing is a costum colleciton method
-        OrderPaid::dispatch($order, $user, $paymentResult);
-    }
-
-
-    protected function checkSecurePaymentValidation($order, $request)
-    {
-        if (!$request->status == 'failure') {
-
-            $order->updateStatusPaymentFailed();
-
-            return redirect('http://localhost:3000/odeme', [
-                'status' => false,
-                'message' => 'Banka 3d ödemesi sırasında hata oluştu.'
-            ]);
-        }
-    }
-
-    protected function checkSecurePayment($paymentResult, $order)
-    {
-        if ($paymentResult->getStatus() == 'failure') {
-
-            $order->updateStatusPaymentFailed();
-
-            return redirect('http://localhost:3000/odeme', [
-                'status' => false,
-                'message' => 'Banka 3d ödemesi sırasında hata oluştu.'
-            ]);
-        }
-    }
-
-    protected function checkPayment($paymentResult, $order)
-    {
-        if ($paymentResult->getStatus() == 'failure') {
-
-            $order->updateStatusPaymentFailed();
-
-            throw new PaymentFailedException($this->paymentResult->getErrorMessage());
-        }
+        OrderPaid::dispatch($user, $this->gateway, $order);
     }
 
     protected function createOrder($request)

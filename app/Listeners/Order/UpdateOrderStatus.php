@@ -5,7 +5,7 @@ namespace App\Listeners\Order;
 use App\Events\Order\OrderPaid;
 
 
-class CreateTransaction
+class UpdateOrderStatus
 {
     /**
      * Handle the event.
@@ -15,6 +15,6 @@ class CreateTransaction
      */
     public function handle(OrderPaid $event)
     {
-        $event->gateway->createTransactions();
+        $event->gateway->updateOrderStatus();
     }
 }

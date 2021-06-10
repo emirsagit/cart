@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\isTotalPriceValid;
 use LVR\CreditCard\CardCvc;
 use LVR\CreditCard\CardNumber;
 use App\Rules\PayAtDoorIsValid;
@@ -46,6 +47,10 @@ class OrderStoreRequest extends FormRequest
                 'required',
                 'exists:shippings,id'
             ],
+            'installment_id' => [
+                'required',
+                new isTotalPriceValid($this->installment_id, $this)
+            ],
             'pay_at_door' => [
                 new PayAtDoorIsValid($this->shipping_id),
             ],
@@ -54,6 +59,25 @@ class OrderStoreRequest extends FormRequest
             'expiration_month' => ['required', new CardExpirationMonth($this->get('expiration_year'))],
             'cvc' => ['required', new CardCvc($this->get('card_number'))],
             'card_holder' => ['required', 'string'],
+        ];
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'card_number' => 'Kart Numarası',
+            'delivery_id' => 'Fatura Adresi',
+            'billing_id' => 'Teslimat Adresi',
+            'shipping_id' => 'Kargo',
+            'pay_at_door' => 'Kapıda Ödeme',
+            'expiration_year' => 'Yıl',
+            'expiration_month' => 'Ay',
+            'card_holder' => 'Kart Sahibi'
         ];
     }
 }

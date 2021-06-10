@@ -3,7 +3,6 @@
 namespace App\Events\Order;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -11,19 +10,19 @@ class OrderPaid
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $order;
     public $user;
-    public $paymentResult;
+    public $gateway;
+    public $order;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($order, $user, $paymentResult)
+    public function __construct($user, $gateway, $order)
     {
-        $this->order = $order;
         $this->user = $user;
-        $this->paymentResult = $paymentResult;
+        $this->gateway = $gateway;
+        $this->order = $order;
     }
 }

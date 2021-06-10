@@ -18,15 +18,10 @@ return [
     'paths' => [
         'api/*',
         '/sanctum/csrf-cookie',
+        '/sanctum/token',
         '/login',
         '/register',
-        '/logout',
-        '/sanctum/token',
-        '/api/cart',
-        '/api/payment',
-        '/orders',
-        '/api/orders',
-        '/api/payment/installment',
+        '/logout'
     ],
 
     'allowed_methods' => ['*'],

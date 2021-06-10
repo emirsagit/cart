@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Cart\Money;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class Installment extends Model
 {
@@ -13,7 +14,11 @@ class Installment extends Model
     protected $appends = ['installment_difference'];
 
     protected $fillable = [
-        'bin_number', 'user_id', 'installment_price', 'total_price', 'installment_number', 'price', 'card_family', 'local_subtotal', 'local_total'
+        'bin_number', 'user_id', 'installment_price', 'total_price', 'installment_number', 'price', 'card_family', 'local_subtotal', 'local_total', 'force3ds'
+    ];
+
+    protected $casts = [
+        'force3ds' => 'boolean'
     ];
 
     public function getInstallmentPriceAttribute($value)

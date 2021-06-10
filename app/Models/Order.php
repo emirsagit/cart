@@ -40,6 +40,12 @@ class Order extends Model
         $this->save();
     }
 
+    public function updateStatusProcessing()
+    {
+        $this->status = self::PROCESSING;
+        $this->save();
+    }
+
     public function getSubtotalAttribute($value)
     {
         return new Money($value);

@@ -49,6 +49,11 @@ class Money
         return $this;
     }
 
+    public function equals(Money $money)
+    {
+        return $this->money->equals($money->instance());
+    }
+
     protected function instance()
     {
         return $this->money;
